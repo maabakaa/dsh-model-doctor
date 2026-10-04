@@ -1,0 +1,40 @@
+{
+  "name": "dsh-model-doctor",
+  "version": "0.3.0",
+  "description": "模型医生：在对话输入区的模型选择菜单里，为每个模型选项追加「连通检测」与「删除」按钮——检测直连各网关探测连通性/欠费/额度，删除直接从 llm-pi-ai 配置移除模型（自动备份配置文档）。",
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "model-selector",
+    "connectivity",
+    "balance",
+    "ui"
+  ],
+  "author": "lxy33",
+  "license": "MIT",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-connection"
+      ]
+    }
+  }
+}
