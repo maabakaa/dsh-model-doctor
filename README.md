@@ -30,13 +30,21 @@ DSH 桌面客户端插件：在对话输入区的**模型选择菜单**里，为
 
 ## 依赖与适配
 
-- 模型菜单本体由 **dsh-reasoning-effort** 插件渲染（`.re-model-*` 行结构）。本插件是
-  行内 DOM 增强：在既有行上追加自持元素并 `stopPropagation`，不替换任何 React 节点、
-  不抢 `conversation.input.model` 座位。禁用 dsh-reasoning-effort 后按钮不出现（安全无副作用）。
+- **不依赖任何菜单渲染插件**：官方原生模型菜单、`dsh-effort-slider`、`dsh-reasoning-effort`，
+  或将来任何第三方菜单，本插件都能工作。
+  - 通用路径：从宿主半取回权威模型目录（provider/model 名称），在弹层里按「文本命中已知
+    模型名」定位模型行，再向上取最近的可点击祖先作为行容器；
+  - 兼容路径：若检测到 `dsh-reasoning-effort` 的 `.re-model-menu` 结构，则改用其
+    section/group 精确分组匹配（更稳，优先使用）。
+- 只做行内 DOM 增强：在既有行上追加自持元素并 `stopPropagation`，不替换任何 React 节点、
+  不抢 `conversation.input.model` 座位，因此不会与滑块类插件冲突。
 - 宿主↔浏览器通道走 `ctx.connection.fetch.register` 注册到共享 `/api` 通道
   （客户端裸 `fetch('/api/model-doctor/...')`），这是桌面端实测可达的机制。
 - `package.json` 的 `dsh.client.immediately: true` 必须保留：客户端脚本包默认懒加载，
   没有它纯 DOM 增强插件永远不会被激活。
+- 遇到界面不显示时，客户端半会把 DOM 自检结果上报到
+  `%USERPROFILE%\.dsh\model-doctor-client-report.json`（记录命中的弹层根、行数、样本类名），
+  便于定位菜单结构变化。
 
 ## 安装
 
@@ -68,6 +76,8 @@ DSH 桌面客户端插件：在对话输入区的**模型选择菜单**里，为
 
 ## 版本
 
+- v0.4.0 — **解耦菜单渲染插件**：新增「已知模型名 + 可点击行」通用定位路径，官方原生菜单可用；
+  不再依赖也不冲突于 dsh-reasoning-effort / dsh-effort-slider；新增客户端 DOM 自检上报
 - v0.3.0 — 检测结果持久化（跨菜单开关与重启保留，只留最近一次）
 - v0.2.1 — 按钮放大到 27px
 - v0.2.0 — 修复结果回填映射（重扫重新入表 + 模型 id 兜底匹配）、按钮钉在选项右侧、
