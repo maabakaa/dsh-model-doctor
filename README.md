@@ -22,7 +22,13 @@ DSH 桌面客户端插件：在对话输入区的**模型选择菜单**里，为
 
 1. `cordis.patch.yml` 里 `llm-pi-ai` 配置的供应商（智谱 / 硅基流动 / 阿里云百炼…）；
 2. **DeepSeek 官方**（不在 llm-pi-ai 配置里，走内置兜底路由
-   `https://api.deepseek.com/v1` + 凭据 `DEEPSEEK_API_KEY`）。
+   `https://api.deepseek.com/v1` + 凭据 `DEEPSEEK_API_KEY`）；
+3. **OUR FREE MODEL**（`dsh-our-free-model` 插件自带的免密通道）：走专用探测——
+   网关 `https://opencode.ai/zen/v1`、池化凭据 `Bearer public`、桌面客户端指纹头
+   （UA `opencode/1.18.31` + `x-opencode-*`）+ 四诱饵工具指纹门，按模型自动分流
+   端点（muse-spark → `/responses`，union-alpha → `/messages`，其余 →
+   `/chat/completions`），并识别 200 流里夹带的错误帧。免密通道无余额概念，
+   徽章反映的是「该模型此刻能不能用」（地区封锁、协议下线、限流都会如实显示）。
 
 状态码含义：`200` 连通；`401/402/403` 鉴权失败或欠费（余额不足）；`429` 额度耗尽或限流；
 `404` 模型不存在；`5xx` 服务端错误；无响应记为超时。
